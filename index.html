@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الأفلام</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container py-16 flex flex-col gap-16" id="app-root">
+        <!-- شاشة البداية -->
+        <section id="start-screen" class="flex flex-col items-center gap-16">
+            <img src="https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/2783e22d-4de6-401e-8783-f7e2b87c4af5.png" alt="تصميم واجهة لعبة الفرق للأفلام المصرية" style="max-width:280px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+            <h1>لعبة الأفلام</h1>
+            <button id="btn-start" class="btn btn--primary btn--lg" aria-label="ابدأ اللعبة">ابدأ اللعبة</button>
+        </section>
+
+        <!-- اختيار الوضع -->
+        <section id="mode-screen" class="hidden flex flex-col items-center gap-16">
+            <h2>اختر وضع اللعب</h2>
+            <div class="flex gap-16 flex-col" style="max-width:320px;width:100%">
+                <button id="btn-mode-teams" class="btn btn--secondary btn--full-width" aria-label="لعب فرق">لعب فرق (قوائم مخصصة)</button>
+                <button id="btn-mode-random" class="btn btn--secondary btn--full-width" aria-label="وضع الأفلام العشوائية">وضع الأفلام العشوائية</button>
+            </div>
+            <button id="back-to-start-1" class="btn btn--outline">رجوع</button>
+        </section>
+
+        <!-- إعداد الفرق -->
+        <section id="team-setup-screen" class="hidden flex flex-col gap-16" style="max-width:480px;margin:auto">
+            <h2 class="text-center">إعداد الفرق</h2>
+            <div class="form-group">
+                <label class="form-label" for="team1-name">اسم الفريق الأول</label>
+                <input id="team1-name" type="text" class="form-control" placeholder="أدخل اسم الفريق الأول" required>
+            </div>
+            <button id="team1-edit" class="btn btn--outline btn--full-width">تحرير قائمة أفلامي</button>
+            <hr style="border:none;border-top:1px solid var(--color-border);">
+            <div class="form-group">
+                <label class="form-label" for="team2-name">اسم الفريق الثاني</label>
+                <input id="team2-name" type="text" class="form-control" placeholder="أدخل اسم الفريق الثاني" required>
+            </div>
+            <button id="team2-edit" class="btn btn--outline btn--full-width">تحرير قائمة أفلامي</button>
+            <div class="flex justify-between gap-16 mt-8">
+                <button id="back-to-mode" class="btn btn--outline">رجوع</button>
+                <button id="to-config" class="btn btn--primary">التالي</button>
+            </div>
+        </section>
+
+        <!-- الإعدادات العامة -->
+        <section id="config-screen" class="hidden flex flex-col gap-16" style="max-width:480px;margin:auto">
+            <h2 class="text-center">إعداد الجولة</h2>
+            <div class="form-group">
+                <label class="form-label" for="round-duration">مدة الجولة (بالدقيقة)</label>
+                <select id="round-duration" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="round-count">عدد الجولات</label>
+                <select id="round-count" class="form-control">
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="flex justify-between gap-16 mt-8">
+                <button id="back-to-team-setup" class="btn btn--outline">رجوع</button>
+                <button id="start-match" class="btn btn--primary">بدء المباراة</button>
+            </div>
+        </section>
+
+        <!-- شاشة اللعب -->
+        <section id="game-screen" class="hidden flex flex-col gap-16 items-center">
+            <div class="card" style="width:100%;max-width:640px">
+                <div class="card__body flex flex-col gap-16 items-center">
+                    <div class="flex justify-between gap-16" style="width:100%">
+                        <div class="status status--info" id="team1-score">فريق 1: 0</div>
+                        <div class="status status--info" id="team2-score">فريق 2: 0</div>
+                    </div>
+                    <h3 id="current-team-label">دور: فريق 1</h3>
+                    <h2 id="film-title" style="min-height:54px">—</h2>
+                    <div id="timer-display" class="status status--warning" style="font-size:2rem;padding:var(--space-12) var(--space-20)">00:00</div>
+                    <div class="flex gap-16">
+                        <button id="btn-start-turn" class="btn btn--primary btn--lg">ابدأ دوري</button>
+                        <button id="btn-correct" class="btn btn--secondary hidden">✓ إجابة صحيحة</button>
+                        <button id="btn-skip" class="btn btn--secondary hidden">✗ تمرير</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- شاشة النتيجة -->
+        <section id="result-screen" class="hidden flex flex-col gap-16 items-center">
+            <h2 id="result-title">النتيجة</h2>
+            <div id="result-details" class="flex flex-col gap-8"></div>
+            <button id="btn-restart" class="btn btn--primary btn--lg">لعب مجدداً</button>
+        </section>
+
+        <!-- نافذة كلمة السر -->
+        <div id="password-modal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-content card" style="max-width:360px;margin:auto">
+                <div class="card__body flex flex-col gap-16">
+                    <h3 id="password-modal-title">كلمة السر</h3>
+                    <input id="password-input" type="password" class="form-control" aria-label="كلمة السر">
+                    <div class="flex gap-16 justify-between">
+                        <button id="password-cancel" class="btn btn--outline">إلغاء</button>
+                        <button id="password-submit" class="btn btn--primary">دخول</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة تحرير الأفلام -->
+        <div id="film-modal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal-content card" style="max-width:480px;margin:auto;height:80vh;display:flex;flex-direction:column">
+                <div class="card__body flex flex-col" style="flex:1;gap:var(--space-16);overflow:auto">
+                    <h3>قائمة الأفلام</h3>
+                    <textarea id="film-textarea" class="form-control" style="flex:1;height:100%;resize:vertical" aria-label="أدخل عناوين الأفلام، كل سطر فيلم"></textarea>
+                </div>
+                <div class="card__footer flex gap-16 justify-between">
+                    <button id="film-cancel" class="btn btn--outline">إلغاء</button>
+                    <button id="film-save" class="btn btn--primary">حفظ</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
